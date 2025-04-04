@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Crypto Mining & Investment</title>
+    <style>
+        /* Basic form styles */
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #captchaContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #eaeaea;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #errorMessage {
+            margin-top: 10px;
+            font-size: 14px;
+            color: red;
+        }
+        #successMessage {
+            margin-top: 10px;
+            font-size: 14px;
+            color: green;
+        }
+        p {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create an Account</h2>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="referralCode">Referral Code (optional):</label>
+                <input type="text" id="referralCode" name="referralCode">
+            </div>
+            <div class="form-group">
+                <label for="captcha">Enter the code below:</label>
+                <div id="captchaContainer"></div>
+                <input type="text" id="captchaInput" name="captcha" required placeholder="Enter the CAPTCHA">
+            </div>
+            <div id="errorMessage" style="color: red; display: none;"></div>
+            <div id="successMessage" style="color: green; display: none;"></div>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <p>Already have an account? <a href="login.html">Login here</a></p>
+    </div>
+
+    <script>
+        // Function to generate a random CAPTCHA string
+        function generateCaptcha() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let captcha = '';
+            for (let i = 0; i < 6; i++) {
+                captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return captcha;
+        }
+
+        // Display the CAPTCHA on the page
+        function displayCaptcha() {
+            const captcha = generateCaptcha();
+            document.getElementById('captchaContainer').innerText = captcha;
+
+            // Save the CAPTCHA value to validate later
+            document.getElementById('captchaContainer').setAttribute('data-captcha', captcha);
+        }
+
+        // Validate the CAPTCHA when the form is submitted
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const referralCode = document.getElementById('referralCode').value;
+            const enteredCaptcha = document.getElementById('captchaInput').value;
+            const captcha = document.getElementById('captchaContainer').getAttribute('data-captcha');
+
+            // Check if the entered CAPTCHA is correct
+            if (enteredCaptcha !== captcha) {
+                document.getElementById('errorMessage').innerText = 'Incorrect CAPTCHA. Please try again.';
+                document.getElementById('errorMessage').style.display = 'block';
+                return;
+            }
+
+            // Hide error and show success message
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('successMessage').innerText = 'Registration successful! Redirecting...';
+
+            // Get existing users from localStorage, or create an empty array if none exist
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // Save new user to localStorage
+            users.push({ username, password, referralCode });
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Redirect after a few seconds
+            setTimeout(function() {
+                window.location.href = 'login.html';  // Redirect to login page after registration
+            }, 2000);
+        });
+
+        // Display the CAPTCHA when the page loads
+        displayCaptcha();
+    </script>
+</body>
+</html>

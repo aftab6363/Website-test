@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        label {
+            margin-bottom: 8px;
+            display: block;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Deposit Funds</h2>
+        <form id="depositForm">
+            <label for="amount">Amount to Deposit (PKR):</label>
+            <input type="number" id="amount" name="amount" required>
+
+            <label for="paymentMethod">Payment Method:</label>
+            <select id="paymentMethod" name="paymentMethod" required>
+                <option value="JazzCash">JazzCash</option>
+                <option value="EasyPaisa">EasyPaisa</option>
+            </select>
+
+            <label for="transactionId">Transaction ID:</label>
+            <input type="text" id="transactionId" name="transactionId" required>
+
+            <button type="submit">Submit Deposit</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('depositForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            let amount = parseFloat(document.getElementById('amount').value);
+            let paymentMethod = document.getElementById('paymentMethod').value;
+            let transactionId = document.getElementById('transactionId').value;
+            
+            let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+            if (currentUser) {
+                // Store the deposit request as pending
+                let depositRequest = {
+                    userId: currentUser.username,
+                    amount: amount,
+                    paymentMethod: paymentMethod,
+                    transactionId: transactionId,
+                    status: "pending", // Set status to "pending" until verified
+                    date: new Date().toLocaleString()
+                };
+
+                // Store the deposit request in localStorage
+                let pendingDeposits = JSON.parse(localStorage.getItem('pendingDeposits')) || [];
+                pendingDeposits.push(depositRequest);
+                localStorage.setItem('pendingDeposits', JSON.stringify(pendingDeposits));
+
+                alert(`Deposit request of PKR ${amount} via ${paymentMethod} has been submitted and is pending verification.`);
+                window.location.href = 'dashboard.html'; // Redirect to dashboard
+            } else {
+                alert('You need to log in first!');
+                window.location.href = 'login.html'; // Redirect to login page if not logged in
+            }
+        });
+    </script>
+</body>
+</html>

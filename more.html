@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>More Features - Crypto Mining & Investment</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to the styles.css file -->
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Main Container */
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Navbar Styles */
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            padding: 10px 0;
+        }
+
+        .navbar {
+            text-align: center;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .navbar li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .navbar a:hover {
+            background-color: #575757;
+        }
+
+        .navbar a.active {
+            background-color: #28a745;
+        }
+
+        /* Main Heading Styles */
+        h1 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        /* Paragraph Text Style */
+        p {
+            font-size: 16px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Content -->
+    <div class="container">
+        <h1>More Features</h1>
+        <p>Explore additional features and tools available on our platform.</p>
+    </div>
+
+    <!-- Footer Navbar -->
+    <footer>
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html" id="homeLink">Home</a></li>
+                <li><a href="invite.html" id="inviteLink">Invite</a></li>
+                <li><a href="earning.html" id="earningLink">Earning</a></li>
+                <li><a href="more.html" id="moreLink">More Features</a></li>
+            </ul>
+        </nav>
+    </footer>
+
+    <script>
+        // Function to set the active class on the current page link
+        function setActiveLink() {
+            const links = document.querySelectorAll('.navbar a');
+            links.forEach(link => link.classList.remove('active'));
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const currentLink = document.getElementById(currentPage.split('.')[0] + 'Link');
+            if (currentLink) {
+                currentLink.classList.add('active');
+            }
+        }
+
+        // Set the active link when the page loads
+        setActiveLink();
+    </script>
+</body>
+</html>

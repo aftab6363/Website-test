@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            margin: 0;
+            padding: 0;
+            color: #fff;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            color: #333;
+        }
+        h2 {
+            text-align: center;
+        }
+        .user-list, .deposit-list, .withdrawal-list {
+            list-style: none;
+            padding: 0;
+        }
+        .user-list li, .deposit-list li, .withdrawal-list li {
+            margin: 10px 0;
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        .ban-btn {
+            background-color: #dc3545;
+        }
+        .ban-btn:hover {
+            background-color: #c82333;
+        }
+        .logout-btn {
+            background-color: #007bff;
+            margin-top: 20px;
+        }
+        .logout-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Admin Dashboard</h2>
+
+        <h3>All Users</h3>
+        <ul id="userList" class="user-list"></ul>
+
+        <h3>Pending Deposits</h3>
+        <ul id="pendingDeposits" class="deposit-list"></ul>
+
+        <h3>Completed Deposits</h3>
+        <ul id="completedDeposits" class="deposit-list"></ul>
+
+        <h3>Pending Withdrawals</h3>
+        <ul id="pendingWithdrawals" class="withdrawal-list"></ul>
+
+        <h3>Completed Withdrawals</h3>
+        <ul id="completedWithdrawals" class="withdrawal-list"></ul>
+
+        <button class="btn logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+            let pendingDeposits = JSON.parse(localStorage.getItem("pendingDeposits")) || [];
+            let completedDeposits = JSON.parse(localStorage.getItem("completedDeposits")) || [];
+            let pendingWithdrawals = JSON.parse(localStorage.getItem("pendingWithdrawals")) || [];
+            let completedWithdrawals = JSON.parse(localStorage.getItem("completedWithdrawals")) || [];
+
+            function saveData() {
+                localStorage.setItem("users", JSON.stringify(users));
+                localStorage.setItem("pendingDeposits", JSON.stringify(pendingDeposits));
+                localStorage.setItem("completedDeposits", JSON.stringify(completedDeposits));
+                localStorage.setItem("pendingWithdrawals", JSON.stringify(pendingWithdrawals));
+                localStorage.setItem("completedWithdrawals", JSON.stringify(completedWithdrawals));
+            }
+
+            function displayUsers() {
+                let userList = document.getElementById("userList");
+                userList.innerHTML = "";
+                users.forEach((user, index) => {
+                    let listItem = document.createElement("li");
+                    listItem.innerHTML = `
+                        <span><strong>${user.username}</strong> - Balance: ${user.balance || 0} PKR</span>
+                        ${user.banned ? "<span style='color: red;'>BANNED</span>" : `<button class="ban-btn" onclick="banUser(${index})">Ban</button>`}
+                    `;
+                    userList.appendChild(listItem);
+                });
+            }
+
+            function displayPendingDeposits() {
+                let depositList = document.getElementById("pendingDeposits");
+                depositList.innerHTML = "";
+                pendingDeposits.forEach((deposit, index) => {
+                    let listItem = document.createElement("li");
+                    listItem.innerHTML = `
+                        <span>User: ${deposit.userId} - Amount: ${deposit.amount} PKR</span><br>
+                        <span>Payment Method: ${deposit.paymentMethod}</span><br>
+                        <span>Transaction ID: ${deposit.transactionId}</span><br>
+                        <button class="btn" onclick="confirmDeposit(${index})">Confirm</button>
+                    `;
+                    depositList.appendChild(listItem);
+                });
+            }
+
+            function displayCompletedDeposits() {
+                let completedDepositList = document.getElementById("completedDeposits");
+                completedDepositList.innerHTML = "";
+                completedDeposits.forEach((deposit) => {
+                    let listItem = document.createElement("li");
+                    listItem.innerHTML = `
+                        <span>User: ${deposit.userId} - Amount: ${deposit.amount} PKR</span><br>
+                        <span>Payment Method: ${deposit.paymentMethod}</span><br>
+                        <span>Transaction ID: ${deposit.transactionId}</span>
+                    `;
+                    completedDepositList.appendChild(listItem);
+                });
+            }
+
+            function displayPendingWithdrawals() {
+                let withdrawalList = document.getElementById("pendingWithdrawals");
+                withdrawalList.innerHTML = "";
+                pendingWithdrawals.forEach((withdrawal, index) => {
+                    let user = users.find(u => u.username === withdrawal.userId);
+                    let listItem = document.createElement("li");
+                    listItem.innerHTML = `
+                        <span>User: ${user ? user.username : 'Unknown'} - Amount: ${withdrawal.amount} PKR</span><br>
+                        <span>Payment Method: ${withdrawal.paymentMethod}</span><br>
+                        <span>Account Number: ${withdrawal.accountNumber}</span><br>
+                        <button class="btn" onclick="confirmWithdrawal(${index})">Confirm</button>
+                    `;
+                    withdrawalList.appendChild(listItem);
+                });
+            }
+
+            function displayCompletedWithdrawals() {
+                let completedWithdrawalList = document.getElementById("completedWithdrawals");
+                completedWithdrawalList.innerHTML = "";
+                completedWithdrawals.forEach((withdrawal) => {
+                    let user = users.find(u => u.username === withdrawal.userId);
+                    let listItem = document.createElement("li");
+                    listItem.innerHTML = `
+                        <span>User: ${user ? user.username : 'Unknown'} - Amount: ${withdrawal.amount} PKR</span><br>
+                        <span>Payment Method: ${withdrawal.paymentMethod}</span><br>
+                        <span>Account Number: ${withdrawal.accountNumber}</span>
+                    `;
+                    completedWithdrawalList.appendChild(listItem);
+                });
+            }
+
+            window.confirmDeposit = function (index) {
+                let deposit = pendingDeposits[index];
+                let user = users.find(u => u.username === deposit.userId);
+
+                if (user && !user.banned) {
+                    user.balance = (user.balance || 0) + deposit.amount;
+                    completedDeposits.push(deposit);
+                    pendingDeposits.splice(index, 1);
+                    saveData();
+                    alert("Deposit confirmed.");
+                    displayPendingDeposits();
+                    displayCompletedDeposits();
+                    displayUsers();
+                } else {
+                    alert("User not found or is banned.");
+                }
+            };
+
+            window.confirmWithdrawal = function (index) {
+                let withdrawal = pendingWithdrawals[index];
+                let user = users.find(u => u.username === withdrawal.userId);
+
+                if (user && !user.banned && user.balance >= withdrawal.amount) {
+                    user.balance -= withdrawal.amount;
+                    completedWithdrawals.push(withdrawal);
+                    pendingWithdrawals.splice(index, 1);
+                    saveData();
+                    alert("Withdrawal confirmed.");
+                    displayPendingWithdrawals();
+                    displayCompletedWithdrawals();
+                    displayUsers();
+                } else {
+                    alert("User not found, is banned, or has insufficient balance.");
+                }
+            };
+
+            window.banUser = function (index) {
+                users[index].banned = true;
+                saveData();
+                alert(`${users[index].username} has been banned.`);
+                displayUsers();
+            };
+
+            window.logout = function () {
+                localStorage.clear(); // Clear session data
+                window.location.href = "login.html"; // Redirect to login page or home
+            };
+
+            displayUsers();
+            displayPendingDeposits();
+            displayCompletedDeposits();
+            displayPendingWithdrawals();
+            displayCompletedWithdrawals();
+        });
+    </script>
+</body>
+</html>

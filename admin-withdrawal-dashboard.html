@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Withdrawal Dashboard</title>
+    <style>
+        /* Your custom styles here */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Admin - Manage Withdrawals</h2>
+        <h3>Pending Withdrawals</h3>
+        <ul id="pendingWithdrawals">
+            <!-- Pending withdrawals will be listed here -->
+        </ul>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get users and pending withdrawals from localStorage
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            let pendingWithdrawals = JSON.parse(localStorage.getItem('pendingWithdrawals')) || [];
+            let withdrawalList = document.getElementById('pendingWithdrawals');
+
+            // Function to display pending withdrawals
+            function displayWithdrawals() {
+                withdrawalList.innerHTML = '';
+                pendingWithdrawals.forEach((withdrawal, index) => {
+                    let listItem = document.createElement("li");
+                    listItem.innerHTML = `
+                        <span>${withdrawal.userId} - ${withdrawal.amount} PKR</span>
+                        <button onclick="confirmWithdrawal(${index})">Confirm Withdrawal</button>
+                    `;
+                    withdrawalList.appendChild(listItem);
+                });
+            }
+
+            // Confirm withdrawal functionality
+            window.confirmWithdrawal = function(index) {
+                let withdrawal = pendingWithdrawals[index];
+                let user = users.find(u => u.username === withdrawal.userId);
+
+                if (user) {
+                    if (user.balance >= withdrawal.amount) {
+                        // Deduct the withdrawal amount from the user's balance
+                        user.balance -= withdrawal.amount;
+
+                        // Remove the withdrawal from pending withdrawals
+                        pendingWithdrawals.splice(index, 1);
+
+                        // Save the updated data back to localStorage
+                        localStorage.setItem('users', JSON.stringify(users));
+                        localStorage.setItem('pendingWithdrawals', JSON.stringify(pendingWithdrawals));
+
+                        alert("Withdrawal confirmed.");
+                        displayWithdrawals();  // Refresh the list of withdrawals
+                    } else {
+                        alert("Insufficient balance for withdrawal.");
+                    }
+                } else {
+                    alert("User not found.");
+                }
+            }
+
+            displayWithdrawals(); // Display the pending withdrawals when page loads
+        });
+    </script>
+</body>
+</html>

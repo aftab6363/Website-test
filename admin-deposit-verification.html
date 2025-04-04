@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Deposit Confirmation</title>
+    <style>
+        /* Add your styling here */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Confirm User Deposits</h2>
+        <h3>Pending Deposits</h3>
+        <ul id="pendingDeposits">
+            <!-- Pending deposits will be loaded here -->
+        </ul>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let deposits = JSON.parse(localStorage.getItem("pendingDeposits")) || [];
+            let depositList = document.getElementById("pendingDeposits");
+
+            function displayDeposits() {
+                depositList.innerHTML = "";
+                deposits.forEach((deposit, index) => {
+                    let listItem = document.createElement("li");
+                    listItem.innerHTML = `
+                        <strong>${deposit.userId}</strong> - ${deposit.amount} PKR 
+                        <button onclick="confirmDeposit(${index})">Confirm Deposit</button>
+                    `;
+                    depositList.appendChild(listItem);
+                });
+            }
+
+            window.confirmDeposit = function (index) {
+                let deposit = deposits[index];
+                let users = JSON.parse(localStorage.getItem("users")) || [];
+                let user = users.find(u => u.username === deposit.userId);
+
+                if (user) {
+                    // Update the user's balance
+                    user.balance = (user.balance || 0) + deposit.amount;
+                    localStorage.setItem("users", JSON.stringify(users));
+
+                    // Remove the deposit from pending deposits
+                    deposits.splice(index, 1);
+                    localStorage.setItem("pendingDeposits", JSON.stringify(deposits));
+
+                    alert("Deposit confirmed.");
+                    displayDeposits();
+                } else {
+                    alert("User not found.");
+                }
+            };
+
+            displayDeposits(); // Initial load
+        });
+    </script>
+</body>
+</html>

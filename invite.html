@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invite - Crypto Mining & Investment</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to the styles.css file -->
+    <style>
+        /* Styles similar to register.html */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .referral-link {
+            font-size: 18px;
+            color: #28a745;
+        }
+
+        .button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Referral Link</h1>
+        <p>Share your referral link and earn rewards for each user who signs up!</p>
+        <p><strong>Your Referral Link:</strong> <span id="referralLink"></span></p>
+        <a href="#" class="button">Copy Referral Link</a>
+    </div>
+
+    <script>
+        // Get the current user's username from localStorage or your backend system
+        const user = JSON.parse(localStorage.getItem('user'));
+        const referralLink = `http://example.com/register.html?ref=${user.username}`;
+        
+        // Display the referral link on the page
+        document.getElementById('referralLink').textContent = referralLink;
+        
+        // Copy the referral link to clipboard
+        document.querySelector('.button').addEventListener('click', function() {
+            navigator.clipboard.writeText(referralLink).then(function() {
+                alert('Referral link copied to clipboard!');
+            });
+        });
+    </script>
+     <footer>
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html" id="homeLink">Home</a></li>
+                <li><a href="invite.html" id="inviteLink">Invite</a></li>
+                <li><a href="earning.html" id="earningLink">Earning</a></li>
+                <li><a href="more.html" id="moreLink">More Features</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+            </ul>
+        </nav>
+    </footer>
+</body>
+</html>

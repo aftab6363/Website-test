@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            background-size: 400% 400%;
+            animation: gradientAnimation 10s ease infinite;
+            color: #fff;
+        }
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+        }
+
+        /* Header */
+        h2 {
+            font-size: 2.5rem;
+            color: #28a745;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .welcome {
+            font-size: 1.2rem;
+            margin: 20px 0;
+            color: #fff;
+        }
+
+        /* Balance Section */
+        .balance-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            color: #28a745;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            margin-top: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #6a11cb, #0ce41e);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* History Section */
+        .history {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);
+            font-size: 0.9rem;
+            text-align: left;
+        }
+        .history h3 {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        /* New Transaction Record Style (like WhatsApp image) */
+        .transaction-record {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .transaction-record h4 {
+            margin: 0 0 10px 0;
+            color: #fff;
+            font-size: 1rem;
+        }
+        
+        .transaction-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .transaction-table td {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .transaction-table td:first-child {
+            width: 30%;
+            color: #ddd;
+        }
+        
+        .transaction-table td:last-child {
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        .status-waiting {
+            color: #ffcc00;
+            font-weight: bold;
+        }
+        
+        .status-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .transaction-date {
+            font-size: 0.8rem;
+            color: #bbb;
+            margin-top: 5px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>User Dashboard</h2>
+        <div class="welcome" id="welcomeMessage">Welcome, User!</div>
+        
+        <div class="balance-container">
+            Balance: <span id="userBalance" class="balance">0</span> PKR
+        </div>
+
+        <a href="deposit.html" class="btn">Make Deposit</a>
+        <a href="withdraw.html" class="btn">Withdraw</a>
+        <a href="change-password.html" class="btn">Change Password</a>
+        <button class="btn" onclick="toggleHistory()">View Transaction History</button>
+
+        <div class="history" id="transactionHistory" style="display: none;">
+            <h3>Withdrawal Record</h3>
+            <div id="withdrawalHistoryList">
+                <!-- Example withdrawal record (like your WhatsApp image) -->
+                <div class="transaction-record">
+                    <h4>Order Number: 20250402130148459638020</h4>
+                    <table class="transaction-table">
+                        <tr>
+                            <td>Amount</td>
+                            <td><strong>600</strong> PKR</td>
+                        </tr>
+                        <tr>
+                            <td>State</td>
+                            <td class="status-waiting">Waiting</td>
+                        </tr>
+                        <tr>
+                            <td>Date</td>
+                            <td>02-04-2025 13:01:48</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="transaction-record">
+                    <h4>Order Number: 20250330145908531199090</h4>
+                    <table class="transaction-table">
+                        <tr>
+                            <td>Amount</td>
+                            <td><strong>500</strong> PKR</td>
+                        </tr>
+                        <tr>
+                            <td>State</td>
+                            <td class="status-success">Success</td>
+                        </tr>
+                        <tr>
+                            <td>Date</td>
+                            <td>30-03-2025 14:59:08</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <h3>Deposit Record</h3>
+            <div id="depositHistoryList">
+                <!-- Example deposit record -->
+                <div class="transaction-record">
+                    <h4>Order Number: 20250403104512345678901</h4>
+                    <table class="transaction-table">
+                        <tr>
+                            <td>Amount</td>
+                            <td><strong>1000</strong> PKR</td>
+                        </tr>
+                        <tr>
+                            <td>State</td>
+                            <td class="status-success">Success</td>
+                        </tr>
+                        <tr>
+                            <td>Date</td>
+                            <td>03-04-2025 10:45:12</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+    let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    let pendingDeposits = JSON.parse(localStorage.getItem("pendingDeposits")) || [];
+    let completedDeposits = JSON.parse(localStorage.getItem("completedDeposits")) || [];
+    let pendingWithdrawals = JSON.parse(localStorage.getItem("pendingWithdrawals")) || [];
+    let completedWithdrawals = JSON.parse(localStorage.getItem("completedWithdrawals")) || [];
+
+    // Redirect if not logged in
+    if (!currentUser) {
+        alert("Please log in first");
+        window.location.href = "login.html";
+        return;
+    }
+
+    document.getElementById("userBalance").textContent = currentUser.balance || 0;
+    document.getElementById("welcomeMessage").textContent = `Welcome, ${currentUser.username}!`;
+
+    // Function to assign missing timestamps to transactions
+    function assignMissingDates(transactions) {
+        return transactions.map((transaction, index) => {
+            if (!transaction.date) {
+                let fallbackDate = new Date();
+                fallbackDate.setDate(fallbackDate.getDate() - (index + 1) * 2); // Assign a random past date
+                transaction.date = fallbackDate.toISOString();
+            }
+            return transaction;
+        });
+    }
+
+    // Ensure all transactions have proper timestamps
+    pendingDeposits = assignMissingDates(pendingDeposits);
+    completedDeposits = assignMissingDates(completedDeposits);
+    pendingWithdrawals = assignMissingDates(pendingWithdrawals);
+    completedWithdrawals = assignMissingDates(completedWithdrawals);
+
+    // Save updated transactions to localStorage
+    localStorage.setItem("pendingDeposits", JSON.stringify(pendingDeposits));
+    localStorage.setItem("completedDeposits", JSON.stringify(completedDeposits));
+    localStorage.setItem("pendingWithdrawals", JSON.stringify(pendingWithdrawals));
+    localStorage.setItem("completedWithdrawals", JSON.stringify(completedWithdrawals));
+
+    // Function to update transaction history
+    function updateHistory() {
+        let depositHistoryList = document.getElementById("depositHistoryList");
+        let withdrawalHistoryList = document.getElementById("withdrawalHistoryList");
+        depositHistoryList.innerHTML = "";
+        withdrawalHistoryList.innerHTML = "";
+
+        // Process deposits
+        pendingDeposits.concat(completedDeposits).forEach(deposit => {
+            if (deposit.userId === currentUser.username) {
+                let isCompleted = completedDeposits.some(d => d.orderNumber === deposit.orderNumber);
+                let status = isCompleted ? "Success" : "Waiting";
+                let statusClass = isCompleted ? "status-success" : "status-waiting";
+
+                let depositHTML = `
+                    <div class="transaction-record">
+                        <h4>Order Number: ${deposit.orderNumber || 'N/A'}</h4>
+                        <table class="transaction-table">
+                            <tr>
+                                <td>Amount</td>
+                                <td><strong>${deposit.amount}</strong> PKR</td>
+                            </tr>
+                            <tr>
+                                <td>State</td>
+                                <td class="${statusClass}">${status}</td>
+                            </tr>
+                            <tr>
+                                <td>Date</td>
+                                <td>${new Date(deposit.date).toLocaleString()}</td>
+                            </tr>
+                        </table>
+                    </div>
+                `;
+                depositHistoryList.innerHTML += depositHTML;
+            }
+        });
+
+        // Process withdrawals
+        pendingWithdrawals.concat(completedWithdrawals).forEach(withdrawal => {
+            if (withdrawal.userId === currentUser.username) {
+                let isCompleted = completedWithdrawals.some(w => w.orderNumber === withdrawal.orderNumber);
+                let status = isCompleted ? "Success" : "Waiting";
+                let statusClass = isCompleted ? "status-success" : "status-waiting";
+
+                let withdrawalHTML = `
+                    <div class="transaction-record">
+                        <h4>Order Number: ${withdrawal.orderNumber || 'N/A'}</h4>
+                        <table class="transaction-table">
+                            <tr>
+                                <td>Amount</td>
+                                <td><strong>${withdrawal.amount}</strong> PKR</td>
+                            </tr>
+                            <tr>
+                                <td>State</td>
+                                <td class="${statusClass}">${status}</td>
+                            </tr>
+                            <tr>
+                                <td>Date</td>
+                                <td>${new Date(withdrawal.date).toLocaleString()}</td>
+                            </tr>
+                        </table>
+                    </div>
+                `;
+                withdrawalHistoryList.innerHTML += withdrawalHTML;
+            }
+        });
+    }
+
+    function toggleHistory() {
+        let historySection = document.getElementById("transactionHistory");
+        if (historySection.style.display === "none") {
+            historySection.style.display = "block";
+            updateHistory();
+        } else {
+            historySection.style.display = "none";
+        }
+    }
+
+    // Function to confirm deposit
+    function confirmDeposit(userId, amount) {
+        let depositIndex = pendingDeposits.findIndex(deposit => deposit.userId === userId && deposit.amount === amount);
+        if (depositIndex !== -1) {
+            let confirmedDeposit = pendingDeposits.splice(depositIndex, 1)[0];
+            confirmedDeposit.date = new Date().toISOString(); // Set confirmation date
+            completedDeposits.push(confirmedDeposit);
+            localStorage.setItem("pendingDeposits", JSON.stringify(pendingDeposits));
+            localStorage.setItem("completedDeposits", JSON.stringify(completedDeposits));
+            alert("Deposit confirmed!");
+            updateHistory();
+        }
+    }
+
+    // Function to confirm withdrawal
+    function confirmWithdrawal(userId, amount) {
+        let withdrawalIndex = pendingWithdrawals.findIndex(withdrawal => withdrawal.userId === userId && withdrawal.amount === amount);
+        if (withdrawalIndex !== -1) {
+            let confirmedWithdrawal = pendingWithdrawals.splice(withdrawalIndex, 1)[0];
+            confirmedWithdrawal.date = new Date().toISOString(); // Set confirmation date
+            completedWithdrawals.push(confirmedWithdrawal);
+            localStorage.setItem("pendingWithdrawals", JSON.stringify(pendingWithdrawals));
+            localStorage.setItem("completedWithdrawals", JSON.stringify(completedWithdrawals));
+            alert("Withdrawal confirmed!");
+            updateHistory();
+        }
+    }
+
+    // Expose functions globally
+    window.toggleHistory = toggleHistory;
+    window.confirmDeposit = confirmDeposit;
+    window.confirmWithdrawal = confirmWithdrawal;
+});
+
+</script>
+          
+</body>
+</html>

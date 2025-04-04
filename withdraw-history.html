@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdrawal History</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            margin: 0;
+            padding: 0;
+            color: #fff;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            color: #333;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .status {
+            font-weight: bold;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .status.pending {
+            background-color: #ffcc00;
+            color: #333;
+        }
+
+        .status.completed {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status.failed {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Your Withdrawal History</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Payment Method</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="historyTableBody">
+                <!-- Withdrawal records will be loaded here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+            if (currentUser) {
+                let withdrawals = JSON.parse(localStorage.getItem('pendingWithdrawals')) || [];
+
+                // Filter withdrawals for the current user
+                let userWithdrawals = withdrawals.filter(withdrawal => withdrawal.userId === currentUser.id);
+
+                let historyTableBody = document.getElementById('historyTableBody');
+                
+                if (userWithdrawals.length > 0) {
+                    userWithdrawals.forEach(function(withdrawal) {
+                        let row = document.createElement('tr');
+                        
+                        row.innerHTML = `
+                            <td>PKR ${withdrawal.amount}</td>
+                            <td>${withdrawal.paymentMethod}</td>
+                            <td>${withdrawal.date}</td>
+                            <td><span class="status ${withdrawal.status}">${withdrawal.status}</span></td>
+                        `;
+                        
+                        historyTableBody.appendChild(row);
+                    });
+                } else {
+                    let row = document.createElement('tr');
+                    row.innerHTML = `<td colspan="4" style="text-align:center;">No withdrawal requests found.</td>`;
+                    historyTableBody.appendChild(row);
+                }
+            } else {
+                alert('You need to log in first!');
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>
